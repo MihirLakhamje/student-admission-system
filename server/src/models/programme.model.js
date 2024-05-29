@@ -5,13 +5,14 @@ const programmeSchema = new Schema({
   progCode: { type: String, required: true, unique: true },
   description: { type: String },
   duration: { type: Number, required: true },
-  fees: { type: Number, required: true },
   overallFees: { type: Number, required: true },
   degreeType: { 
     type: String, 
     enum: ["PG", "UG"],
     required: true 
   },
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
   courses: [
     {
       type: mongoose.Schema.Types.ObjectId,

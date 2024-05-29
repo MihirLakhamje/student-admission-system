@@ -76,3 +76,21 @@ export const getSession = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).select("-password");
   return res.json(new ApiResponse(200, "user decoded", user));
 });
+
+export const getAllUsers = asyncHandler(async (req, res) => {
+  let { page, pageSize } = req.query;
+  page = parseInt(page) || 1;
+  pageSize = parseInt(pageSize) || 10;
+  const users = await User.aggregate([
+    {
+      $facet: {
+        metaData: [
+          { $count: "totalCount" },
+          { $addFields: { page: page, pageSize: pageSize } },
+        ],
+        userData: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+      },
+    }
+  ]);
+  return res.json(new ApiResponse(200, "users fetched", users));
+});

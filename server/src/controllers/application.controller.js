@@ -120,7 +120,20 @@ export const createApplication = asyncHandler(async (req, res) => {
 });
 
 export const getAllApplications = asyncHandler(async (req, res) => {
-  const applications = await Application.find({});
+  let { page, pageSize } = req.query;
+  page = parseInt(page) || 1;
+  pageSize = parseInt(pageSize) || 10;
+  const applications = await Application.aggregate([
+    {
+      $facet:{
+        metaData: [
+          { $count: "totalCount" },
+          { $addFields: { page: page, pageSize: pageSize } },
+        ],
+        applicationData: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+      }
+    }
+  ]);
   return res.json(new ApiResponse(200, "Applications fetched", applications));
 });
 

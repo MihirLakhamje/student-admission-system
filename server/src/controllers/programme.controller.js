@@ -43,7 +43,22 @@ export const addProgramme = asyncHandler(async (req, res) => {
 });
 
 export const getAllProgrammes = asyncHandler(async (req, res) => {
-  const programmes = await Programme.find({});
+  let { page, pageSize } = req.query;
+
+  page = parseInt(page) || 1;
+  pageSize = parseInt(pageSize) || 10;
+  const programmes = await Programme.aggregate([
+    {
+      $facet: {
+        metaData: [
+          { $count: "totalCount" },
+          { $addFields: { page: page, pageSize: pageSize } },
+        ],
+        programmeData: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+      },
+    },
+  ]);
+
   return res.json(new ApiResponse(200, "Programmes fetched", programmes));
 });
 
@@ -62,14 +77,14 @@ export const updateProgramme = asyncHandler(async (req, res) => {
   const updatedProgramme = await Programme.findById(programmeId);
 
   return res.json(new ApiResponse(200, "Programme updated", updatedProgramme));
-})
+});
 
 export const deleteProgramme = asyncHandler(async (req, res) => {
   const { programmeId } = req.params;
   await Programme.findByIdAndDelete(programmeId);
 
   return res.json(new ApiResponse(200, "Programme deleted"));
-})
+});
 
 export const getProgrammeById = asyncHandler(async (req, res) => {
   const { programmeId } = req.params;
@@ -78,7 +93,7 @@ export const getProgrammeById = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Programme not found");
   }
   return res.json(new ApiResponse(200, "Programme fetched", programme));
-})
+});
 
 export const addCourse = asyncHandler(async (req, res) => {
   const { programmeId } = req.params;
@@ -95,4 +110,4 @@ export const addCourse = asyncHandler(async (req, res) => {
   programme.courses.push(courseId);
   await programme.save();
   return res.json(new ApiResponse(201, "Course added", programme));
-})
+});
