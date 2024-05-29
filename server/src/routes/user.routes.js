@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { 
+  getSession,
   login,
   logout,
   signup
@@ -11,5 +12,7 @@ router.route("/signup").post(signup)
 router.route("/login").post(login)
 
 router.route("/logout").get(authVerify, logout)
+
+router.route("/me").get(authVerify, getSession)
 
 export default router

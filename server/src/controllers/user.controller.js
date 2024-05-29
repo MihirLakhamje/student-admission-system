@@ -49,17 +49,30 @@ export const login = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid credentials");
   }
 
-  const authToken = jwt.sign(
-    { _id: user._id, role: user.role },
-    process.env.JWT_SECRET_KEY,
-    { expiresIn: "1h" }
-  );
+  const userData = {
+    _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    role: user.role,
+  };
+
+  const authToken = jwt.sign(userData, process.env.JWT_SECRET_KEY, {
+    expiresIn: "1h",
+  });
 
   return res
-    .cookie("accessToken", authToken, { httpOnly: true, secure: true})
-    .json(new ApiResponse(200, "user logged in", authToken));
+    .cookie("accessToken", authToken, { httpOnly: true, secure: true })
+    .json(new ApiResponse(200, "user logged in", { authToken, userData }));
 });
 
 export const logout = asyncHandler(async (req, res) => {
-  return res.clearCookie("accessToken").json(new ApiResponse(200, "user logged out"));
+  return res
+    .clearCookie("accessToken")
+    .json(new ApiResponse(200, "user logged out"));
+});
+
+export const getSession = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+  return res.json(new ApiResponse(200, "user decoded", user));
 });

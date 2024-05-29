@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --experimental-specifier-resolution=node ./src/index.js"
+    "dev": "nodemon node --trace-warnings --experimental-specifier-resolution=node ./src/index.js"
   },
   "type": "module",
   "author": "Mihir Lakhamje",

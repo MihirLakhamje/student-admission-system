@@ -23,8 +23,8 @@ router.route("/").post(
   ]),
   createApplication);
 router.route("/").get(authVerify, isAdmin, getAllApplications);
-router.route("/:applicationId").get(authVerify, getAllApplications);
 router.route("/:applicationId").patch(authVerify, updateApplication);
+router.route("/:applicationId").get(authVerify, isAdmin, getAllApplications);
 router.route("/:applicationId").post(authVerify, isAdmin, acceptanceStatus);
 
 export default router;
