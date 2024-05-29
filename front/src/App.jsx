@@ -7,7 +7,7 @@ import Authorized from "./layouts/Authorized";
 import User from "./pages/User";
 import Signup from "./pages/Signup";
 import Dashboard from "./layouts/Dashboard";
-import { GetAllProgramme } from "./pages/programme/Programme";
+import { GetAllProgramme, GetProgramme } from "./pages/programme/Programme";
 
 function App() {
   return (
@@ -16,7 +16,10 @@ function App() {
         <Route element={<Dashboard />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/programmes" element={<GetAllProgramme />} />
+          <Route path="/programmes">
+            <Route index element={<GetAllProgramme />} />
+            <Route path=":programmeId" element={<GetProgramme />} />
+          </Route>
           <Route path="/" element={<Protect />}>
             <Route index element={<Home />} />
             <Route

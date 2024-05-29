@@ -1,55 +1,119 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import React from "react";
+import { useState } from "react";
+import { useAuth } from "../context/AuthProvider";
+import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { ErrorLabel } from "@/components/CustomLabels";
 import { Link } from "react-router-dom";
 
+const signupSchema = yup.object().shape({
+  firstName: yup
+    .string()
+    .min(3, "First name must be at least 3 characters")
+    .required("First name is required"),
+  lastName: yup
+    .string()
+    .min(3, "Last name must be at least 3 characters")
+    .required("Last name is required"),
+  email: yup
+    .string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: yup.string().required("Password is required"),
+});
 export default function Signup() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(signupSchema),
+  });
+  localStorage.removeItem("authToken");
+  const navigate = useNavigate();
+
+  const { signupAction } = useAuth();
+
+  async function handleSignup(data) {
+    // e.preventDefault();
+    try {
+      await signupAction(data);
+      navigate("/login");
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   return (
     <>
-      <div className="h-full flex items-center justify-center ">
-        <Card className="w-[350px]">
-          <CardHeader>
-            <CardTitle>Create project</CardTitle>
-            <CardDescription>
-              All field are required.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form>
-              <div className="flex flex-col w-full gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="fname">First name</Label>
-                  <Input id="fname" type="text" placeholder="First name" />
+      <div className="h-full flex items-center justify-center p-2">
+        <div className="card max-w-md w-full bg-base-100 shadow-xl">
+          <div className="card-body p-5">
+            <h2 className="card-title">Wellcome, back!</h2>
+            <form
+              onSubmit={handleSubmit(handleSignup)}
+              className="flex flex-col gap-4"
+            >
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">First name</span>
                 </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="lname">Last name</Label>
-                  <Input id="lname" type="text" placeholder="Last name" />
+                <input
+                  placeholder="Applicant's first name"
+                  className="input input-bordered w-full"
+                  {...register("firstName")}
+                />
+                {errors.firstName && <ErrorLabel message={errors.firstName.message} />}
+              </label>
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Last name</span>
                 </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" placeholder="Email address" type="email" />
+                <input
+                  placeholder="Applicant's last name"
+                  className="input input-bordered w-full"
+                  {...register("lastName")}
+                />
+                {errors.lastName && <ErrorLabel message={errors.lastName.message} />}
+              </label>
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Email</span>
                 </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="password">Password</Label>
-                  <Input id="password" placeholder="Password" type="password" autoComplete="true" />
+                <input
+                  placeholder="Email address"
+                  className="input input-bordered w-full"
+                  {...register("email")}
+                />
+                {errors.email && <ErrorLabel message={errors.email.message} />}
+              </label>
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Password</span>
                 </div>
-            <Link to="/login" className="text-sm hover:underline" >Already have account?</Link>
-              </div>
+                <input
+                  placeholder="Password"
+                  className="input input-bordered w-full"
+                  {...register("password")}
+                />
+                {errors.password && (
+                  <ErrorLabel message={errors.password.message} />
+                )}
+              </label>
+              <label className="form-control w-fit">
+                <Link to="/signup" className="text-xs hover:underline ">
+                  Create an account?
+                </Link>
+              </label>
+              <label className="form-control w-full">
+                <button className="btn btn-primary" type="submit">
+                  Signup
+                </button>
+              </label>
             </form>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button className="w-full">Signup</Button>
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
       </div>
     </>
   );

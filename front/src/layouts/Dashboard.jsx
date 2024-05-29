@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { NavLinks } from "@/components/LinkItems";
+import { useAuth } from "@/context/AuthProvider";
 import React from "react";
 import { Outlet } from "react-router";
 import { Link } from "react-router-dom";
 
 export default function Dashboard() {
+  const { isAuthenticated, logout } = useAuth();
   return (
     <>
       <div className="drawer h-full">
@@ -33,51 +34,25 @@ export default function Dashboard() {
                 </svg>
               </label>
             </div>
-            <div className="flex-1 px-2 mx-2">SAS</div>
+            <div className="flex-1 px-2 mx-2 md:flex hidden text-lg font-bold ">Admission Portal</div>
+            <div className="flex-1 px-2 mx-2 md:hidden flex">SAS</div>
             <div className=" hidden md:flex">
-              <ul className="menu menu-horizontal gap-2">
+              <ul className="menu menu-horizontal gap-2 items-center">
                 {/* Navbar menu content here */}
-                <li>
-                  <Link
-                    to="/programme"
-                    className="hover:text-primary hover:bg-transparent font-semibold"
-                  >
-                    Programmes
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/faq"
-                    className="hover:text-primary hover:bg-transparent font-semibold"
-                  >
-                    FAQ's
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/contact"
-                    className="hover:text-primary hover:bg-transparent font-semibold"
-                  >
-                    Contact
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/about"
-                    className="hover:text-primary hover:bg-transparent font-semibold"
-                  >
-                    About
-                  </Link>
-                </li>
-                
-                <li>
-                  <Button size="sm">Login</Button>
-                </li>
+                <NavLinks/>
+
+                {isAuthenticated ? (
+                  <li>
+                    <button onClick={()=> logout()} className="btn btn-primary btn-sm">Logout</button>
+                  </li>
+                ) : (
+                  <li>
+                    <Link className="btn btn-primary btn-sm">Login</Link>
+                  </li>
+                )}
               </ul>
             </div>
-            <div className=" flex md:hidden">
-              <Input type="text" placeholder="Search programmes" />
-            </div>
+            <div className=" flex md:hidden"></div>
           </nav>
           {/* Page content here */}
           <main className="h-full">

@@ -98,6 +98,7 @@ const AuthProvider = ({ children }) => {
     user,
     logout,
     isAuthenticated,
+    signupAction
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

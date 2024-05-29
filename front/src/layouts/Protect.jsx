@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
+import Loading from "@/components/Loading";
 
 const ProtectedRoute = () => {
   const {isAuthenticated, user, token} = useAuth();
-  console.log(user, isAuthenticated)
   if(token && user === null){
-    return <h1>Loading..</h1>
+    return <Loading />
   }
 
   // User is authenticated, render the protected route content

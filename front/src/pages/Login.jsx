@@ -1,34 +1,36 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { useNavigate } from "react-router";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import React from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { ErrorLabel } from "@/components/CustomLabels";
 import { Link } from "react-router-dom";
 
+const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: yup.string().required("Password is required"),
+});
 export default function Login() {
-  const [input, setInput] = useState({
-    email: "",
-    password: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(loginSchema),
   });
   localStorage.removeItem("authToken");
   const navigate = useNavigate();
 
   const { loginAction } = useAuth();
 
-  async function handleLogin(e) {
-    e.preventDefault();
+  async function handleLogin(data) {
+    // e.preventDefault();
     try {
-      await loginAction(input);
+      await loginAction(data);
       navigate("/");
     } catch (error) {
       console.log(error.message);
@@ -42,37 +44,54 @@ export default function Login() {
       [name]: value,
     }));
   }
-
   return (
     <>
-      <div className="h-full flex items-center justify-center ">
-        <Card className="w-[350px]">
-          <CardHeader>
-            <CardTitle>Welcome, Back!</CardTitle>
-            <CardDescription>
-              All field are required.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form>
-              <div className="flex flex-col w-full gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" placeholder="Email address" type="email" />
+      <div className="h-full flex items-center justify-center p-2">
+        <div className="card max-w-md w-full bg-base-100 shadow-xl">
+          <div className="card-body p-5">
+            <h2 className="card-title">Wellcome, back!</h2>
+            <form
+              onSubmit={handleSubmit(handleLogin)}
+              className="flex flex-col gap-4"
+            >
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Email</span>
                 </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="password">Password</Label>
-                  <Input id="password" placeholder="Password" type="password" autoComplete="true" />
+                <input
+                  placeholder="Email address"
+                  className="input input-bordered w-full"
+                  {...register("email")}
+                />
+                {errors.email && <ErrorLabel message={errors.email.message} />}
+              </label>
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Password</span>
                 </div>
-            <Link className="text-sm hover:underline" >Forgot password?</Link>
-            <Link to="/signup" className="text-sm hover:underline" >Doesn't have account?</Link>
-              </div>
+                <input
+                  placeholder="Password"
+                  className="input input-bordered w-full"
+                  {...register("password")}
+                />
+                {errors.password && (
+                  <ErrorLabel message={errors.password.message} />
+                )}
+              </label>
+              <label className="form-control w-fit">
+                <Link to="/forgotpassword" className="text-xs hover:underline">Forgot password?</Link>
+              </label>
+              <label className="form-control w-fit">
+                <Link to="/signup" className="text-xs hover:underline ">Create an account?</Link>
+              </label>
+              <label className="form-control w-full">
+                <button className="btn btn-primary" type="submit">
+                  Login
+                </button>
+              </label>
             </form>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button className="w-full">Login</Button>
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
       </div>
     </>
   );
