@@ -14,13 +14,23 @@ const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
+  const signupAction = async (input) => {
+    try {
+      await axios.post("http://localhost:8000/api/v1/users/signup", input);
+      navigate("/login");
+      return;
+    } catch (error) {
+      console.log(error.response?.data?.message);
+    }
+  };
+
   const loginAction = async (input) => {
     try {
       const { data } = await axios.post(
         "http://localhost:8000/api/v1/users/login",
         input,
       );
-      if(data.data){
+      if (data.data) {
         setIsAuthenticated(true);
         navigate("/");
         setToken(data.data.authToken);
@@ -38,27 +48,30 @@ const AuthProvider = ({ children }) => {
     const authToken = localStorage.getItem("authToken");
     async function fetchUser(authToken) {
       try {
-        const { data } = await axios.get("http://localhost:8000/api/v1/users/me", {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
+        const { data } = await axios.get(
+          "http://localhost:8000/api/v1/users/me",
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
           },
-        });
-        if(data.data){
-          console.log("data is verified")
-          setUser(data.data)
+        );
+        if (data.data) {
+          console.log("data is verified");
+          setUser(data.data);
           setIsAuthenticated(true);
         }
       } catch (error) {
         console.log(error.response?.data);
-        localStorage.removeItem("authToken"); 
-        setToken(null)
+        localStorage.removeItem("authToken");
+        setToken(null);
         setIsAuthenticated(false);
         navigate("/login");
       }
     }
-    if(authToken){
-      fetchUser(authToken)
-    }else{
+    if (authToken) {
+      fetchUser(authToken);
+    } else {
       setIsAuthenticated(false);
     }
   }, [navigate]);
