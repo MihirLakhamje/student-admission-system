@@ -10,7 +10,6 @@ export const addProgramme = asyncHandler(async (req, res) => {
     duration,
     description,
     degreeType,
-    fees,
     overallFees,
   } = req.body;
   if (
@@ -18,7 +17,6 @@ export const addProgramme = asyncHandler(async (req, res) => {
     !progCode ||
     !duration ||
     !degreeType ||
-    !fees ||
     !overallFees
   ) {
     throw new ApiError(400, "Please provide all the required fields");
@@ -35,7 +33,6 @@ export const addProgramme = asyncHandler(async (req, res) => {
     duration,
     description,
     degreeType,
-    fees,
     overallFees,
   });
 
@@ -46,24 +43,28 @@ export const getAllProgrammes = asyncHandler(async (req, res) => {
   let { page, pageSize } = req.query;
 
   page = parseInt(page) || 1;
-  pageSize = parseInt(pageSize) || 10;
+  pageSize = parseInt(pageSize) || 8;
   const programmes = await Programme.aggregate([
     {
       $facet: {
         metaData: [
           { $count: "totalCount" },
-          { $addFields: { page: page, pageSize: pageSize } },
+          { $addFields: { page: page, pageSize: pageSize } }
+          
         ],
-        programmeData: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+        programmeData: [
+          { $skip: (page - 1) * pageSize }, 
+          { $limit: pageSize },
+        ],
       },
     },
   ]);
 
-  return res.json(new ApiResponse(200, "Programmes fetched", programmes));
+  return res.json(new ApiResponse(200, "Programmes fetched", {metaData: programmes[0].metaData[0], programmes: programmes[0].programmeData}));
 });
 
 export const updateProgramme = asyncHandler(async (req, res) => {
-  const { updateFilds } = req.body;
+  const { data } = req.body;
   const { programmeId } = req.params;
 
   const programme = await Programme.findById(programmeId);
@@ -71,7 +72,7 @@ export const updateProgramme = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Programme not found");
   }
 
-  const updated = await Programme.findByIdAndUpdate(programmeId, updateFilds);
+  const updated = await Programme.findByIdAndUpdate(programmeId, data);
   await updated.save();
 
   const updatedProgramme = await Programme.findById(programmeId);

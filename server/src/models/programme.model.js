@@ -6,21 +6,19 @@ const programmeSchema = new Schema({
   description: { type: String },
   duration: { type: Number, required: true },
   overallFees: { type: Number, required: true },
-  degreeType: { 
-    type: String, 
+  degreeType: {
+    type: String,
     enum: ["PG", "UG"],
-    required: true 
+    required: true,
   },
-  startDate: { type: Date, required: true },
-  endDate: { type: Date, required: true },
   courses: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Course"
+      ref: "Course",
     },
-  ]
+  ],
 });
 
-const Programme = mongoose.model('Programme', programmeSchema);
+const Programme = mongoose.model("Programme", programmeSchema);
 
 export default Programme;
