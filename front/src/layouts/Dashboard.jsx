@@ -34,8 +34,7 @@ export default function Dashboard() {
                 </svg>
               </label>
             </div>
-            <div className="flex-1 px-2 mx-2 md:flex hidden text-lg font-bold ">Admission Portal</div>
-            <div className="flex-1 px-2 mx-2 md:hidden flex">SAS</div>
+            <div className="flex-1 px-2 mx-2  text-lg font-semibold ">Admission Portal</div>
             <div className=" hidden md:flex">
               <ul className="menu menu-horizontal gap-2 items-center">
                 {/* Navbar menu content here */}
@@ -43,11 +42,11 @@ export default function Dashboard() {
 
                 {isAuthenticated ? (
                   <li>
-                    <button onClick={()=> logout()} className="btn btn-primary btn-sm">Logout</button>
+                    <button onClick={()=> logout()} className="btn btn-secondary btn-sm">Logout</button>
                   </li>
                 ) : (
                   <li>
-                    <Link className="btn btn-primary btn-sm">Login</Link>
+                    <Link to="/login" className="btn btn-secondary btn-sm">Login</Link>
                   </li>
                 )}
               </ul>
@@ -55,7 +54,7 @@ export default function Dashboard() {
             <div className=" flex md:hidden"></div>
           </nav>
           {/* Page content here */}
-          <main className="h-full">
+          <main className="h-full p-2 md:p-5">
             <Outlet />
           </main>
         </div>

@@ -57,7 +57,6 @@ const AuthProvider = ({ children }) => {
           },
         );
         if (data.data) {
-          console.log("data is verified");
           setUser(data.data);
           setIsAuthenticated(true);
         }

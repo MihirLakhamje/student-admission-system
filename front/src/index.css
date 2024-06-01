@@ -2,10 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-body, #root{
+body,
+#root {
   height: 100dvh;
 }
 
-.active{
-  @apply text-primary;
+.menu li > *:not(ul):not(.menu-title):not(details):active{
+  @apply bg-primary;
 }
