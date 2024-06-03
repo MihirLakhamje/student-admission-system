@@ -19,7 +19,6 @@ export function Item({ toLoc, title }) {
 
 export function NavLinks() {
   const { isAuthenticated, user } = useAuth();
-  const { programmeId } = useParams();
 
   if (isAuthenticated && user?.role === "admin") {
     return (
@@ -27,7 +26,6 @@ export function NavLinks() {
         <Item toLoc="/" title="Home" />
         <Item toLoc={`/programmes`} title="Programmes" />
         <Item toLoc="/applications" title="Applications" />
-        <Item toLoc="/manage-users" title="Manage Users" />
       </>
     );
   } else if (isAuthenticated && user?.role === "user") {
@@ -43,21 +41,66 @@ export function NavLinks() {
             tabIndex={10}
             className="dropdown-content z-[999] menu p-2 shadow bg-base-100 rounded-box w-52 gap-2"
           >
-            <Item toLoc="/application" title="Create Application"  />
+            <Item toLoc="/application" title="Create Application" />
             <Item toLoc="/application/upload" title="Upload Documents" />
             <Item toLoc="/application/view" title="My Application" />
           </ul>
         </div>
         <Item toLoc="/about" title="About Us" />
-        <Item toLoc="/contact" title="Contact Us" />
       </>
     );
   } else {
     return (
       <>
         <Item toLoc="/programmes" title="Programmes" />
-        <Item toLoc="/contact" title="Contact Us" />
         <Item toLoc="/about" title="About Us" />
+      </>
+    );
+  }
+}
+
+export function SideItem({ toLoc, title }) {
+  const location = useLocation();
+
+  let isActive = location.pathname === toLoc;
+  return (
+    <li className="p-0">
+      <Link
+        className={`${isActive ? "active" : ""} font-medium no-underline z-50`}
+        to={toLoc}
+      >
+        {title}
+      </Link>
+    </li>
+  );
+}
+export function SideNavLinks() {
+  const { isAuthenticated, user } = useAuth();
+
+  if (isAuthenticated && user?.role === "admin") {
+    return (
+      <>
+        <SideItem toLoc="/" title="Home" />
+        <SideItem toLoc={`/programmes`} title="Programmes" />
+        <SideItem toLoc="/applications" title="Applications" />
+      </>
+    );
+  } else if (isAuthenticated && user?.role === "user") {
+    return (
+      <>
+        <SideItem toLoc="/" title="Home" />
+        <SideItem toLoc="/programmes" title="Programmes" />
+        <SideItem toLoc="/application" title="Create Application" />
+        <SideItem toLoc="/application/upload" title="Upload Documents" />
+        <SideItem toLoc="/application/view" title="My Application" />
+        <SideItem toLoc="/about" title="About" />
+      </>
+    );
+  } else {
+    return (
+      <>
+        <SideItem toLoc="/programmes" title="Programmes" />
+        <SideItem toLoc="/about" title="About" />
       </>
     );
   }

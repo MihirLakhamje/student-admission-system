@@ -41,7 +41,7 @@ export default function Signup() {
       await signupAction(data);
       navigate("/login");
     } catch (error) {
-      console.log(error.message);
+      throw new Error(error.message);
     }
   }
 
@@ -55,6 +55,7 @@ export default function Signup() {
               onSubmit={handleSubmit(handleSignup)}
               className="flex flex-col gap-4"
             >
+              {/* First name */}
               <label className="form-control w-full">
                 <div className="label">
                   <span className="label-text">First name</span>
@@ -64,8 +65,12 @@ export default function Signup() {
                   className="input input-bordered w-full"
                   {...register("firstName")}
                 />
-                {errors.firstName && <ErrorLabel message={errors.firstName.message} />}
+                {errors.firstName && (
+                  <ErrorLabel message={errors.firstName.message} />
+                )}
               </label>
+
+              {/* Last name */}
               <label className="form-control w-full">
                 <div className="label">
                   <span className="label-text">Last name</span>
@@ -75,8 +80,12 @@ export default function Signup() {
                   className="input input-bordered w-full"
                   {...register("lastName")}
                 />
-                {errors.lastName && <ErrorLabel message={errors.lastName.message} />}
+                {errors.lastName && (
+                  <ErrorLabel message={errors.lastName.message} />
+                )}
               </label>
+
+              {/* Email */}
               <label className="form-control w-full">
                 <div className="label">
                   <span className="label-text">Email</span>
@@ -88,6 +97,8 @@ export default function Signup() {
                 />
                 {errors.email && <ErrorLabel message={errors.email.message} />}
               </label>
+
+              {/* Password */}
               <label className="form-control w-full">
                 <div className="label">
                   <span className="label-text">Password</span>
@@ -101,11 +112,13 @@ export default function Signup() {
                   <ErrorLabel message={errors.password.message} />
                 )}
               </label>
+
               <label className="form-control w-fit">
                 <Link to="/signup" className="text-xs hover:underline ">
                   Create an account?
                 </Link>
               </label>
+
               <label className="form-control w-full">
                 <button className="btn btn-primary" type="submit">
                   Signup

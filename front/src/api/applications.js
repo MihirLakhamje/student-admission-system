@@ -2,8 +2,7 @@ import axios from "axios";
 
 export async function getAllApplicaitons(currentPage, token) {
   try {
-    const { data } = await axios.get(
-      `http://localhost:8000/api/v1/applications/admin/?page=${currentPage}&pageSize=8`,
+    const { data } = await axios.get(`/api/v1/applications/admin/?page=${currentPage}&pageSize=8`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -12,26 +11,27 @@ export async function getAllApplicaitons(currentPage, token) {
     );
     return data;
   } catch (error) {
-    console.log(error.response?.data?.message);
+    throw new Error(error.response?.data?.message);
   }
 }
 
 export async function createApplication(data, token) {
   try {
-    await axios.post("http://localhost:8000/api/v1/applications", data, {
+    await axios.post("/api/v1/applications", data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
   } catch (error) {
-    console.log(error.message);
+    throw new Error(error.response?.data?.message);
   }
 }
 
+// user data
 export async function myApplication(userId, token) {
   try {
     const { data } = await axios.get(
-      `http://localhost:8000/api/v1/applications/${userId}`,
+      `/api/v1/applications/${userId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -40,14 +40,14 @@ export async function myApplication(userId, token) {
     );
     return data;
   } catch (error) {
-    console.log(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   }
 }
 
 export async function getApplication(applicationId, token) {
   try {
     const { data } = await axios.get(
-      `http://localhost:8000/api/v1/applications/admin/${applicationId}`,
+      `/api/v1/applications/admin/${applicationId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -56,14 +56,14 @@ export async function getApplication(applicationId, token) {
     );
     return data;
   } catch (error) {
-    console.log(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   }
 }
 
 export async function approvalApplication(applicationId, input, token) {
   try {
     await axios.post(
-      `http://localhost:8000/api/v1/applications/admin/${applicationId}`,
+      `/api/v1/applications/admin/${applicationId}`,
       input,
       {
         headers: {
@@ -72,6 +72,6 @@ export async function approvalApplication(applicationId, input, token) {
       },
     );
   } catch (error) {
-    console.log(error?.response?.data?.message);
+    throw new Error(error?.response?.data?.message);
   } 
 }

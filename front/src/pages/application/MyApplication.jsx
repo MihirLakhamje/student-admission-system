@@ -9,7 +9,6 @@ export default function MyApplication() {
     async function fetchApplication() {
       const { data } = await myApplication(user?._id, token);
       setApplication(() => data);
-      console.log(data);
     }
 
     fetchApplication();

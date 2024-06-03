@@ -42,7 +42,7 @@ export function GetAllProgramme() {
         const { data } = await getAllProgrammes(currentPage);
         setProgrammes(data);
       } catch (error) {
-        console.log(error.response?.data);
+        throw new Error(error.message);
       }
     }
     fetchProgrammes();
@@ -131,7 +131,7 @@ export function GetProgramme() {
         const { data } = await getProgramme(token, programmeId);
         setProgramme(() => data);
       } catch (error) {
-        console.log(error.response?.data);
+        throw new Error(error.message);
       }
     }
     return () => {
@@ -180,7 +180,7 @@ export function AddProgramme() {
       alert("Programme added successfully");
       reset();
     } catch (error) {
-      console.log(error?.response?.data);
+      throw new Error(error.message);
     }
   }
   return (
@@ -301,10 +301,9 @@ export function UpdateProgramme() {
     const fetchProgramme = async () => {
       try {
         const { data } = await getProgramme(token, programmeId);
-        console.log("fetched", data);
         setProgramme(data);
       } catch (error) {
-        console.log(error.response?.data);
+        throw new Error(error.message);
       }
     };
 
@@ -317,7 +316,7 @@ export function UpdateProgramme() {
       await updateProgramme(value, token, programmeId);
       navigate("/programmes");
     } catch (error) {
-      console.log(error.message);
+      throw new Error(error.message);
     }
   };
   return (
@@ -428,7 +427,7 @@ export function DeleteProgramme() {
       await deleteProgramme(token, programmeId);
       navigate("/programmes");
     } catch (error) {
-      console.log(error.message);
+      throw new Error(error.message);
     }
   };
   useEffect(() => {

@@ -1,5 +1,4 @@
 import daisyui from 'daisyui';
-import preline from "preline/plugin"
 
 /** @type {import('tailwindcss').Config} */
 export const darkMode = ["class"];
@@ -25,4 +24,4 @@ export const theme = {
 export const daisyui= {
   themes: ["winter"],
 }
-export const plugins = [daisyui, preline];
+export const plugins = [daisyui];

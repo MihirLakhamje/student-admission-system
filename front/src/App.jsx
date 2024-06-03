@@ -11,7 +11,8 @@ import ViewAllApplications from "./pages/application/ViewAllApplication";
 import CreateApplication from "./pages/application/CreateApplication";
 import UploadDoc from "./pages/application/UploadDoc";
 import MyApplication from "./pages/application/MyApplication";
-import ViewApplication from "./pages/application/ViewProgramme";
+import ViewApplication from "./pages/application/ViewApplication";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -20,12 +21,16 @@ function App() {
         <Route element={<Dashboard />}>
           <Route path="/login"  element={<Login />} />
           <Route path="/signup"  element={<Signup />} />
+          <Route path="/about" element={<About />} />
           <Route path="/programmes">
             <Route index element={<GetAllProgramme />} />
             <Route path=":programmeId" element={<GetProgramme />} />
           </Route>
           <Route path="/" element={<Protect />}>
+            {/* Welcome page */}
             <Route index element={<Home />} />
+
+            {/* Programme routes */}
             <Route path="programmes" element={<Authorized allowedRoles={"admin"} />}>
               <Route index element={<GetAllProgramme />} />
               <Route path="create" element={<AddProgramme />} />
@@ -33,11 +38,15 @@ function App() {
               <Route path=":programmeId/edit" element={<UpdateProgramme />} />
               <Route path=":programmeId/delete" element={<DeleteProgramme />} />
             </Route>
+
+            {/* Application routes (user) */}
             <Route path="application" element={<Authorized allowedRoles={"user"} />}>
               <Route index element={<CreateApplication />} />
               <Route path="upload" element={<UploadDoc />} />
               <Route path="view" element={<MyApplication />} />
             </Route>
+
+            {/* Application routes (admin) */}
             <Route path="applications" element={<Authorized allowedRoles={"admin"} />}>
               <Route index element={<ViewAllApplications />} />
               <Route path=":applicationId" element={<ViewApplication />} />

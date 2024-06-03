@@ -40,11 +40,9 @@ export default function CreateApplication() {
   async function handleCreateApplication(data) {
     try {
       await createApplication(data, token);
-      // navigate("/application/upload");
-      console.log(data)
 
     } catch (error) {
-      console.log(error.response?.data);
+      throw new Error(error.response?.data?.message);
     }
   }
 
@@ -52,25 +50,24 @@ export default function CreateApplication() {
   useEffect(() => {
     async function fetchProgramme() {
       try {
-        const { data } = await myApplication(user._id,token);
-        console.log("fetched", data);
+        await myApplication(user._id,token);
         navigate("/application/upload")
       } catch (error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
     }
     async function fetchProgrammes() {
       try {
         const { data } = await getAllProgrammes(token);
-        console.log("fetched", data);
         setProgrammes(data.programmes);
       } catch (error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
     }
 
     return () => {
       fetchProgrammes();
+      fetchProgramme();
     }
   }, [])
 

@@ -9,15 +9,13 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 
 export default function ViewApplication() {
-  const { user, isAuthenticated, token } = useAuth();
+  const { token } = useAuth();
   const { applicationId } = useParams();
   const [application, setApplication] = useState({});
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    reset,
   } = useForm();
   const navigate = useNavigate();
 
@@ -26,7 +24,7 @@ export default function ViewApplication() {
       await approvalApplication(applicationId, input, token);
       navigate("/applications");
     } catch (error) {
-      console.log(error.message);
+      throw new Error(error.message);
     }
   }
 
@@ -34,7 +32,6 @@ export default function ViewApplication() {
     async function fetchApplication() {
       const { data } = await getApplication(applicationId, token);
       setApplication(() => data);
-      console.log(data);
     }
 
     fetchApplication();

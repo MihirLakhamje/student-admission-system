@@ -1,4 +1,4 @@
-import { NavLinks } from "@/components/LinkItems";
+import { NavLinks, SideNavLinks } from "@/components/LinkItems";
 import { useAuth } from "@/context/AuthProvider";
 import React from "react";
 import { Outlet } from "react-router";
@@ -12,7 +12,7 @@ export default function Dashboard() {
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col h-full">
           {/* Navbar */}
-          <nav className="w-full navbar backdrop-blur-sm border-b fixed top-0 z-50">
+          <nav className="w-full navbar backdrop-blur-sm border-b fixed top-0 z-10">
             <div className="flex-none md:hidden">
               <label
                 htmlFor="my-drawer-3"
@@ -34,19 +34,42 @@ export default function Dashboard() {
                 </svg>
               </label>
             </div>
-            <div className="flex-1 px-2 mx-2  text-lg font-semibold ">Admission Portal</div>
+            <div className="flex-1 px-2 mx-2  text-lg font-semibold ">
+              Admission Portal
+            </div>
+            <div className="flex md:hidden">
+              {isAuthenticated ? (
+                <button
+                  onClick={() => logout()}
+                  className="btn btn-secondary btn-sm"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link to="/login" className="btn btn-secondary btn-sm">
+                  Login
+                </Link>
+              )}
+            </div>
             <div className=" hidden md:flex">
               <ul className="menu menu-horizontal gap-2 items-center">
                 {/* Navbar menu content here */}
-                <NavLinks/>
+                <NavLinks />
 
                 {isAuthenticated ? (
                   <li>
-                    <button onClick={()=> logout()} className="btn btn-secondary btn-sm">Logout</button>
+                    <button
+                      onClick={() => logout()}
+                      className="btn btn-secondary btn-sm"
+                    >
+                      Logout
+                    </button>
                   </li>
                 ) : (
                   <li>
-                    <Link to="/login" className="btn btn-secondary btn-sm">Login</Link>
+                    <Link to="/login" className="btn btn-secondary btn-sm">
+                      Login
+                    </Link>
                   </li>
                 )}
               </ul>
@@ -58,7 +81,7 @@ export default function Dashboard() {
             <Outlet />
           </main>
         </div>
-        <aside className="drawer-side">
+        <aside className="drawer-side z-50">
           <label
             htmlFor="my-drawer-3"
             aria-label="close sidebar"
@@ -68,12 +91,7 @@ export default function Dashboard() {
           <ul className="menu p-4 w-80 min-h-full bg-base-200">
             {/* Sidebar content here */}
             <li className="mt-10"></li>
-            <li>
-              <a>Sidebar Item 1</a>
-            </li>
-            <li>
-              <a>Sidebar Item 2</a>
-            </li>
+            <SideNavLinks />
           </ul>
         </aside>
       </div>

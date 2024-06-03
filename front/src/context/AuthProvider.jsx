@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
+import { login } from "@/api/user";
 import axios from "axios";
 import { useContext, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -16,18 +17,18 @@ const AuthProvider = ({ children }) => {
 
   const signupAction = async (input) => {
     try {
-      await axios.post("http://localhost:8000/api/v1/users/signup", input);
+      await login(input);
       navigate("/login");
       return;
     } catch (error) {
-      console.log(error.response?.data?.message);
+      throw new Error(error.response?.data?.message);
     }
   };
 
   const loginAction = async (input) => {
     try {
       const { data } = await axios.post(
-        "http://localhost:8000/api/v1/users/login",
+        "/api/v1/users/login",
         input,
       );
       if (data.data) {
@@ -40,7 +41,7 @@ const AuthProvider = ({ children }) => {
     } catch (error) {
       setToken(null);
       setUser(null);
-      console.log(error.message);
+      throw new Error(error.response?.data?.message);
     }
   };
 
@@ -49,7 +50,7 @@ const AuthProvider = ({ children }) => {
     async function fetchUser(authToken) {
       try {
         const { data } = await axios.get(
-          "http://localhost:8000/api/v1/users/me",
+          "/api/v1/users/me",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -61,11 +62,11 @@ const AuthProvider = ({ children }) => {
           setIsAuthenticated(true);
         }
       } catch (error) {
-        console.log(error.response?.data);
         localStorage.removeItem("authToken");
         setToken(null);
         setIsAuthenticated(false);
         navigate("/login");
+        throw new Error(error.response?.data?.message);
       }
     }
     if (authToken) {
@@ -77,7 +78,7 @@ const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.get("http://localhost:8000/api/v1/users/logout", {
+      await axios.get("/api/v1/users/logout", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -87,7 +88,7 @@ const AuthProvider = ({ children }) => {
       setToken(null);
       navigate("/login");
     } catch (error) {
-      console.log(error.message);
+      throw new Error(error.response?.data?.message);
     }
   };
 
@@ -97,7 +98,7 @@ const AuthProvider = ({ children }) => {
     user,
     logout,
     isAuthenticated,
-    signupAction
+    signupAction,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

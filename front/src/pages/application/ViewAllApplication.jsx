@@ -21,9 +21,8 @@ export default function ViewAllApplications() {
       try {
         const { data } = await getAllApplicaitons(currentPage, token);
         setApplications(data);
-        console.log(data)
       } catch (error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
     }
     fetchApplications();
@@ -33,7 +32,6 @@ export default function ViewAllApplications() {
     <>
       <div className="overflow-x-auto mb-2 mt-2">
         <table className="table table-sm md:table-md table-zebra">
-          {/* head */}
           <thead className="text-lg md:text-xl">
             <tr>
               <th>Sr. no.</th>
@@ -44,7 +42,6 @@ export default function ViewAllApplications() {
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
             {applications.applications &&
               applications?.applications.map((application, index) => (
                 <tr key={application._id}>

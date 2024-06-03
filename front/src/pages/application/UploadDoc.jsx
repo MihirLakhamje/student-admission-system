@@ -30,20 +30,17 @@ const navigate = useNavigate();
       await upload(application,input, token)
       navigate("/application/view")
     } catch (error) {
-      console.log(error.message);
+      throw new Error(error.message);
     }
   }
 
   useEffect(() => {
-    console.log(user.role)
     async function fetchProgramme() {
       try {
         const {data}  = await myApplication(user?._id, token);
-        console.log("fetched", data);
         setApplication(()=> data?._id)
-        console.log(application)
       } catch (error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
     }
     fetchProgramme()
