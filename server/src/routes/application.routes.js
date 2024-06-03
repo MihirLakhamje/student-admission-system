@@ -7,7 +7,6 @@ import {
   myApplication,
   updateApplication,
 } from "../controllers/application.controller.js";
-import { upload } from "../middlewares/mutler.js";
 import { authVerify } from "../middlewares/authVerify.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
 const router = Router();
