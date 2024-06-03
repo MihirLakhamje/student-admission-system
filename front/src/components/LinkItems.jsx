@@ -8,7 +8,7 @@ export function Item({ toLoc, title }) {
   return (
     <li className="p-0">
       <Link
-        className={`${isActive ? "btn btn-neutral btn-sm" : "text-slate-900"} font-medium no-underline  hover:no-underline hover:bg-none`}
+        className={`${isActive ? "btn btn-neutral btn-sm" : "btn"} font-medium no-underline  hover:no-underline hover:bg-none btn btn-sm z-50`}
         to={toLoc}
       >
         {title}
@@ -35,7 +35,19 @@ export function NavLinks() {
       <>
         <Item toLoc="/" title="Home" />
         <Item toLoc="/programmes" title="Programmes" />
-        <Item toLoc="/application" title="Create Application" />
+        <div className="dropdown dropdown-bottom">
+          <div tabIndex={10} role="button" className="btn m-1 btn-sm">
+            Application
+          </div>
+          <ul
+            tabIndex={10}
+            className="dropdown-content z-[999] menu p-2 shadow bg-base-100 rounded-box w-52 gap-2"
+          >
+            <Item toLoc="/application" title="Create Application"  />
+            <Item toLoc="/application/upload" title="Upload Documents" />
+            <Item toLoc="/application/view" title="My Application" />
+          </ul>
+        </div>
         <Item toLoc="/about" title="About Us" />
         <Item toLoc="/contact" title="Contact Us" />
       </>

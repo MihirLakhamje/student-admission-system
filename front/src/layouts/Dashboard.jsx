@@ -12,7 +12,7 @@ export default function Dashboard() {
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col h-full">
           {/* Navbar */}
-          <nav className="w-full navbar  backdrop-blur-md">
+          <nav className="w-full navbar backdrop-blur-sm border-b fixed top-0 z-50">
             <div className="flex-none md:hidden">
               <label
                 htmlFor="my-drawer-3"
@@ -54,7 +54,7 @@ export default function Dashboard() {
             <div className=" flex md:hidden"></div>
           </nav>
           {/* Page content here */}
-          <main className="h-full p-2 md:p-5">
+          <main className="h-full p-2 md:p-5 mt-14 -z-0">
             <Outlet />
           </main>
         </div>
