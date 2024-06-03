@@ -58,7 +58,7 @@ export const login = asyncHandler(async (req, res) => {
   };
 
   const authToken = jwt.sign(userData, process.env.JWT_SECRET_KEY, {
-    expiresIn: "1h",
+    expiresIn: "1d",
   });
 
   return res
@@ -92,5 +92,5 @@ export const getAllUsers = asyncHandler(async (req, res) => {
       },
     }
   ]);
-  return res.json(new ApiResponse(200, "users fetched", users));
+  return res.json(new ApiResponse(200, "users fetched", { metaData: users[0].metaData[0], users: users[0].userData }));
 });

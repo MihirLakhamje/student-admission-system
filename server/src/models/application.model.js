@@ -14,7 +14,6 @@ const applicationSchema = new Schema({
     age: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     address: {
-      aptStreet: { type: String, required: true },
       city: { type: String, required: true },
       state: { type: String, required: true },
       zipCode: { type: String, required: true },
@@ -28,11 +27,6 @@ const applicationSchema = new Schema({
     collegeName: { type: String, required: true },
     boardName: { type: String, required: true },
     percentage: { type: Number, required: true },
-  },
-  documents: {
-    photo: { type: String, required: true },
-    signature: { type: String, required: true },
-    hscMarksheet: { type: String, required: true },
   },
   applicationStatus: {
     type: String,

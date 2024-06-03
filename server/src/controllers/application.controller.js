@@ -13,7 +13,6 @@ export const createApplication = asyncHandler(async (req, res) => {
     city,
     state,
     country,
-    aptStreet,
     zipCode,
     phoneNumber,
     bloodGroup,
@@ -23,15 +22,7 @@ export const createApplication = asyncHandler(async (req, res) => {
     boardName,
     percentage,
   } = req.body;
-  const photoLocalPath = req.files?.photo[0]?.path;
-  const signatureLocalPath = req.files?.signature[0]?.path;
-  const hscMarksheetLocalPath = req.files?.hscMarksheet[0]?.path;
 
-  function deleteLocalFiles() {
-    fs.unlinkSync(photoLocalPath);
-    fs.unlinkSync(signatureLocalPath);
-    fs.unlinkSync(hscMarksheetLocalPath);
-  }
 
   if (
     !progCode ||
@@ -39,7 +30,6 @@ export const createApplication = asyncHandler(async (req, res) => {
     !city ||
     !state ||
     !country ||
-    !aptStreet ||
     !zipCode ||
     !phoneNumber ||
     !bloodGroup ||
@@ -49,7 +39,6 @@ export const createApplication = asyncHandler(async (req, res) => {
     !boardName ||
     !percentage
   ) {
-    deleteLocalFiles();
     throw new ApiError(400, "Please provide all the required fields");
   }
 
@@ -58,32 +47,13 @@ export const createApplication = asyncHandler(async (req, res) => {
     applicationStatus: { $in: ["pending", "accepted"] },
   });
   if (isExists) {
-    deleteLocalFiles();
     throw new ApiError(400, "Application already exists");
   }
 
   const programme = await Programme.findOne({ progCode });
   if (!programme) {
-    deleteLocalFiles();
     throw new ApiError(404, "Programme does not exist");
   }
-
-  if (!photoLocalPath) {
-    deleteLocalFiles();
-    throw new ApiError(400, "Please upload photo");
-  }
-  if (!signatureLocalPath) {
-    deleteLocalFiles();
-    throw new ApiError(400, "Please upload signature");
-  }
-  if (!hscMarksheetLocalPath) {
-    deleteLocalFiles();
-    throw new ApiError(400, "Please upload hsc marksheet");
-  }
-
-  const photo = await uploadOnCloudinary(photoLocalPath);
-  const signature = await uploadOnCloudinary(signatureLocalPath);
-  const hscMarksheet = await uploadOnCloudinary(hscMarksheetLocalPath);
 
   const application = await Application.create({
     student: req.user._id,
@@ -92,7 +62,6 @@ export const createApplication = asyncHandler(async (req, res) => {
       age,
       phoneNumber,
       address: {
-        aptStreet,
         city,
         state,
         zipCode,
@@ -106,12 +75,7 @@ export const createApplication = asyncHandler(async (req, res) => {
       collegeName,
       boardName,
       percentage,
-    },
-    documents: {
-      photo: photo.public_id,
-      signature: signature.public_id,
-      hscMarksheet: hscMarksheet.public_id,
-    },
+    }
   });
 
   await application.save();
@@ -130,15 +94,54 @@ export const getAllApplications = asyncHandler(async (req, res) => {
           { $count: "totalCount" },
           { $addFields: { page: page, pageSize: pageSize } },
         ],
-        applicationData: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+        applicationData: [
+          { $skip: (page - 1) * pageSize }, 
+          { $limit: pageSize }, 
+          {
+            $lookup: {
+              from: "programmes",
+              localField: "programme",
+              foreignField: "_id",
+              as: "programme",
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "student",
+              foreignField: "_id",
+              as: "student",
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              "programme.progTitle": 1,
+              "student.firstName": 1,
+              "student.lastName": 1,
+              applicationStatus: 1,
+              createdAt: 1,
+            },
+          },
+          {
+            $addFields: {
+              student: {
+                $arrayElemAt: ["$student", 0],
+              },
+              programme: {
+                $arrayElemAt: ["$programme", 0],
+              },
+            },
+          },
+        ],
       }
-    }
+    },
   ]);
-  return res.json(new ApiResponse(200, "Applications fetched", applications));
+  return res.json(new ApiResponse(200, "Applications fetched", { metaData: applications[0].metaData[0], applications: applications[0].applicationData }));
 });
 
 export const getApplication = asyncHandler(async (req, res) => {
-  const application = await Application.findById(req.params.applicationId);
+  const application = await Application.findById(req.params.applicationId).populate("student").populate("programme");
   if (!application) {
     throw new ApiError(404, "Application not found");
   }
@@ -187,3 +190,14 @@ export const acceptanceStatus = asyncHandler(async (req, res) => {
     new ApiResponse(200, "Application status updated", application)
   );
 });
+
+
+export const myApplication = asyncHandler(async (req, res) => {
+  const {userId} = req.params
+  const application = await Application.findOne({ student: userId}).populate("programme").populate("student");
+  if (!application) {
+    throw new ApiError(404, "Application not found");
+  }
+  return res.json(new ApiResponse(200, "Application fetched", application));
+})
+
