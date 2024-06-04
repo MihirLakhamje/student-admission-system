@@ -38,6 +38,10 @@ app.use((req, res, next) => {
   else next();
 });
 
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
 //routes import
 import userRouter from "./routes/user.routes.js";
 import programmeRouter from "./routes/programme.routes.js";
