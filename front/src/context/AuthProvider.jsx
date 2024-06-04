@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
-import { login } from "@/api/user";
+import { login, register } from "@/api/user";
 import axios from "axios";
 import { useContext, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
 
   const signupAction = async (input) => {
     try {
-      await login(input);
+      await register(input);
       navigate("/login");
       return;
     } catch (error) {
