@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon node --trace-warnings --experimental-specifier-resolution=node node --experimental-policy=policy.json ./src/index.js"
   },
   "type": "module",
