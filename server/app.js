@@ -17,18 +17,9 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-if(process.env.NODE_ENV === "production") {
-  const __dirname = path.resolve();
-  app.use(express.static(path.join(__dirname, "front/dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "front", "dist", "index.html"));
-  });
-}else{
-  app.get("/", (req, res) => {
-    res.send("Hello world");
-  });
-}
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to the API" });
+})
 
 
 //routes import
