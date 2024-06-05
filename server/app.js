@@ -32,10 +32,10 @@ if(process.env.NODE_ENV === "production") {
 
 
 //routes import
-import userRouter from "./routes/user.routes.js";
-import programmeRouter from "./routes/programme.routes.js";
-import applicationRouter from "./routes/application.routes.js";
-import uploadRouter from "./routes/upload.routes.js";
+import userRouter from "./src/routes/user.routes.js";
+import programmeRouter from "./src/routes/programme.routes.js";
+import applicationRouter from "./src/routes/application.routes.js";
+import uploadRouter from "./src/routes/upload.routes.js";
 
 //routes declaration
 app.use("/api/v1/users", userRouter);
