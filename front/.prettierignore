@@ -1,9 +1,0 @@
-./dist
-./node_modules
-./.git
-./.github
-./.vscode
-./.env
-./.env.example
-./.env.production
-./.env.development
